@@ -6,6 +6,8 @@ import { trackItemCollectionQuery } from '../../utils/queries';
 const initialState = {
   items: [],
   isLoading: false,
+  currentTrack: null,
+  currentTrackId: null,
 };
 
 export const getTracksItems = createAsyncThunk(
@@ -27,6 +29,13 @@ const tracksItemsSlice = createSlice({
   name: 'tracksItems',
   initialState,
 
+  reducers: {
+    getCurrentTrack: (state, { payload }) => {
+      state.currentTrack = payload;
+      state.currentTrackId = payload.sys.id;
+    },
+  },
+
   extraReducers: (builder) => {
     builder
       .addCase(getTracksItems.pending, (state) => {
@@ -41,5 +50,7 @@ const tracksItemsSlice = createSlice({
       });
   },
 });
+
+export const { getCurrentTrack } = tracksItemsSlice.actions;
 
 export default tracksItemsSlice.reducer;

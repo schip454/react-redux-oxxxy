@@ -1,4 +1,3 @@
-import Footer from '../Footer/Footer';
 import MainBanner from '../MainBanner/MainBanner';
 import News from '../News/News';
 import ShopBanner from '../ShopBanner/ShopBanner';

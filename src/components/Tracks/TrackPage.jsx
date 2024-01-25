@@ -1,36 +1,14 @@
-import { useState } from 'react';
 import { useTrackItems } from '../../hooks/useTracksItems';
 import { getLocaleDateString } from '../../utils/common';
-import Icon from '../Icon/Icon';
 import Loader from '../Loader/Loader';
 import PageTitle from '../SectionTitle/PageTitle';
-import { useEffect } from 'react';
+
+import { useDispatch } from 'react-redux';
+import { getCurrentTrack } from '../../redux/track/slice';
 
 const TrackPage = () => {
   const { items, isLoading } = useTrackItems();
-
-  const [audio] = useState(new Audio());
-  const [playing, setPlaying] = useState(false);
-  const [currentTrack, setCurrentTrack] = useState(null);
-
-  const handleTrackClick = (track) => {
-    setPlaying((prev) => {
-      const isPlaying = track.sys.id === currentTrack?.sys?.id ? !prev : true;
-
-      audio.src = track.link.url;
-      !isPlaying ? audio.pause() : audio.play();
-
-      return isPlaying;
-    });
-
-    setCurrentTrack(track);
-  };
-
-  useEffect(() => {
-    return () => {
-      audio.pause();
-    };
-  }, [audio]);
+  const dispatch = useDispatch();
 
   return (
     <section className="tracks-page page">
@@ -50,9 +28,6 @@ const TrackPage = () => {
                 description,
               } = track;
 
-              const iconName =
-                playing && id === currentTrack?.sys?.id ? 'pause' : 'play';
-
               return (
                 <li key={id} className="tracks-list__item">
                   <div className="tracks-list__item-image">
@@ -71,9 +46,8 @@ const TrackPage = () => {
 
                   <button
                     className="tracks-list__item-button"
-                    onClick={() => handleTrackClick(track)}>
+                    onClick={() => dispatch(getCurrentTrack(track))}>
                     <span>слушать</span>
-                    <Icon name={iconName} />
                   </button>
                 </li>
               );

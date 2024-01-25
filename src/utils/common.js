@@ -1,4 +1,5 @@
 import { MAIN_URL } from './constants';
+import moment from 'moment';
 
 export const request = async (query) => {
   try {
@@ -31,3 +32,6 @@ export const getLocaleDateString = (
     day,
     year,
   });
+
+export const secondToMMSS = (seconds) =>
+  moment.utc(seconds * 1000).format('mm:ss');

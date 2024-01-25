@@ -1,40 +1,17 @@
-import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { useTrackItems } from '../../hooks/useTracksItems';
+import { getCurrentTrack } from '../../redux/track/slice';
 import { getLocaleDateString } from '../../utils/common';
 
 import Section from '../Section/Section';
 import SectionTitle from '../SectionTitle/SectionTitle';
 import ScrollAnimation from 'react-animate-on-scroll';
-import Icon from '../Icon/Icon';
 import Loader from '../Loader/Loader';
-import { useTrackItems } from '../../hooks/useTracksItems';
-import { useEffect } from 'react';
 
 const Tracks = () => {
   const { items, isLoading } = useTrackItems();
-
-  const [audio] = useState(new Audio());
-  const [playing, setPlaying] = useState(false);
-  const [currentTrack, setCurrentTrack] = useState(null);
-
-  const handleTrackClick = (track) => {
-    setPlaying((prev) => {
-      const isPlaying = track.sys.id === currentTrack?.sys?.id ? !prev : true;
-
-      audio.src = track.link.url;
-      !isPlaying ? audio.pause() : audio.play();
-
-      return isPlaying;
-    });
-
-    setCurrentTrack(track);
-  };
-
-  useEffect(() => {
-    return () => {
-      audio.pause();
-    };
-  }, [audio]);
+  const dispatch = useDispatch();
 
   return (
     <Section className="tracks-section">
@@ -60,12 +37,9 @@ const Tracks = () => {
                   animateOut="fadeOutRight">
                   <div
                     className="track"
-                    onClick={() => handleTrackClick(track)}>
+                    onClick={() => dispatch(getCurrentTrack(track))}>
                     <div className="track-image">
                       <img className="track-img" src={cover.url} alt={title} />
-                      {!!playing && currentTrack.sys.id === id && (
-                        <Icon name={'pause'} />
-                      )}
                     </div>
                     <p className="track-date">
                       {getLocaleDateString(date, { month: 'short' })}
